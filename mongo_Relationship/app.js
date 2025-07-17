@@ -1,7 +1,6 @@
 const express = require('express')
 const app = express()
 const userModel = require("./model/user.model")
-const porstModel = require('./model/post.model')
 const postModel = require('./model/post.model')
 
 app.use(express.json())
@@ -27,6 +26,17 @@ app.post('/:name/create/post',async(req,res)=>{
     user.posts.push(createdPost._id)
     await user.save()
     res.send({user,createdPost})
+})
+
+
+app.get('/posts',async(req,res)=>{
+    const posts =await postModel.find().populate('user')
+    res.send(posts)
+})
+
+app.get('/users',async(req,res)=>{
+    const users =await userModel.find().populate('posts')
+    res.send(users)
 })
 
 app.listen(3000,()=>{
